@@ -27,15 +27,15 @@ library(leaflet)                  # creation de cartes
 library(mapview)                  # exportation de carte en png
 library(dplyr)                    # traitement conditionnel 
 
-crime <- read.csv(file="C:/Users/user/Desktop/5A/R/crime.csv", header=TRUE, sep=",")            # Crimes à Boston entre 2015 et 2018, 327 820 lignes sur 17 colonnes
-airbnb <- read.csv(file="C:/Users/user/Desktop/5A/R/listings.csv", header=TRUE, sep=",")        # Locations Airbnb à Boston en 2016, 3585 lignes sur 95 colonnes
-paris <- read.csv(file="C:/Users/user/Desktop/5A/R/paris.csv", header=TRUE, sep=",")            # Locations Airbnb à Paris en 2018, 6251 lignes sur 95 colonnes
+crime <- read.csv(file="C:/Users/user/Desktop/5A/R/crime.csv", header=TRUE, sep=",")            # Crimes Ã  Boston entre 2015 et 2018, 327 820 lignes sur 17 colonnes
+airbnb <- read.csv(file="C:/Users/user/Desktop/5A/R/listings.csv", header=TRUE, sep=",")        # Locations Airbnb Ã  Boston en 2016, 3585 lignes sur 95 colonnes
+paris <- read.csv(file="C:/Users/user/Desktop/5A/R/paris.csv", header=TRUE, sep=",")            # Locations Airbnb Ã  Paris en 2018, 6251 lignes sur 95 colonnes
 
 ###################################################################################################
-######  1) Cartographie des disparitions et des locations AirBnb à Boston. ########################
+######  1) Cartographie des disparitions et des locations AirBnb Ã  Boston. ########################
 ###################################################################################################
 
-boston=airbnb[(which(airbnb$city=="Boston")),]      ## supprime les données hors de Boston
+boston=airbnb[(which(airbnb$city=="Boston")),]      ## supprime les donnÃ©es hors de Boston
 
 houseIcon <- makeIcon(
   iconUrl = "https://zupimages.net/up/19/46/iqnl.png",
@@ -44,7 +44,7 @@ houseIcon <- makeIcon(
 sharedaptIcon <- makeIcon(
   iconUrl = "https://zupimages.net/up/19/46/z0s6.png",
   iconWidth = 10, iconHeight = 10)
-                                                                                        # Définitions de marqueurs personnalisés pour affichage de la carte
+                                                                                        # DÃ©finitions de marqueurs personnalisÃ©s pour affichage de la carte
 aptIcon <- makeIcon(
   iconUrl = "https://zupimages.net/up/19/46/831a.png",
   iconWidth = 10, iconHeight = 10)
@@ -62,30 +62,30 @@ plotpvrooms = ddply(bostonpvrooms,.(room_type),summarize, lat=latitude,long=long
 plotshrooms = ddply(bostonshrooms,.(room_type),summarize, lat=latitude,long=longitude)
 
 
-truecrime=crime[(which(crime$Lat!="-1")),]                                              # Suppression des données de localisation erronées
+truecrime=crime[(which(crime$Lat!="-1")),]                                              # Suppression des donnÃ©es de localisation erronÃ©es
 truecrime=truecrime[(which(crime$Long!="-1")),]             
 
 truecrime=subset(truecrime, Lat!="NA")
 truecrime=subset(truecrime, Long!="NA")
 
 truecrime=truecrime[(which(truecrime$YEAR=="2016")),]
-truecrime=truecrime[(which(truecrime$OFFENSE_CODE_GROUP=="Missing Person Reported")),]  # Reduction du jeu de données aux disparitions de 2016
+truecrime=truecrime[(which(truecrime$OFFENSE_CODE_GROUP=="Missing Person Reported")),]  # Reduction du jeu de donnÃ©es aux disparitions de 2016
 
 html_legend <- "
 <img src='https://zupimages.net/up/19/46/04q8.png'style='width:11px;height:11px;'> Missing Person Reported<br/>
-<img src='https://zupimages.net/up/19/46/z0s6.png' style='width:10px;height:10px;'> AirBnb Shared Appartment<br/>         # Creation d'une légende pour 
-<img src='https://zupimages.net/up/19/46/831a.png' style='width:10px;height:10px;'> AirBnb Appartment<br/>                # l'intégration des marqueurs personnalisés
+<img src='https://zupimages.net/up/19/46/z0s6.png' style='width:10px;height:10px;'> AirBnb Shared Appartment<br/>         # Creation d'une lÃ©gende pour 
+<img src='https://zupimages.net/up/19/46/831a.png' style='width:10px;height:10px;'> AirBnb Appartment<br/>                # l'intÃ©gration des marqueurs personnalisÃ©s
 <img src='https://zupimages.net/up/19/46/iqnl.png' style='width:10px;height:10px;'> AirBnb Entire Home
 "                                                                           
 
 map <- leaflet()
 map <- addTiles(map)
-map <- addMarkers(map, lng=plothouses$long, lat=plothouses$lat,icon=houseIcon)                            # affichage en 4 temps des maisons, appartements (partagés ou non)
+map <- addMarkers(map, lng=plothouses$long, lat=plothouses$lat,icon=houseIcon)                            # affichage en 4 temps des maisons, appartements (partagÃ©s ou non)
 map <- addMarkers(map, lng=plotpvrooms$long, lat=plotpvrooms$lat,icon=aptIcon)                            # et des disparitions de 2016
 map <- addMarkers(map, lng=plotshrooms$long, lat=plotshrooms$lat,icon=sharedaptIcon)
 map <- addMarkers(map, lng=truecrime$Long, lat=truecrime$Lat, icon = crimeIcon)
 map <- addProviderTiles(map,"CartoDB.Positron")                                                           # modification du calque de fond de carte (plus clair)
-map <- addControl(map, html = html_legend, position = "bottomright")                                      # ajout de la légende personnalisée
+map <- addControl(map, html = html_legend, position = "bottomright")                                      # ajout de la lÃ©gende personnalisÃ©e
 map <- setView(map, lng=-71.080318, lat=42.319596,zoom = 13)                                              # centrage du rendu final 
 #mapshot(map, file = "C:/Users/user/Desktop/5A/R/crimeNhouses.png")                                       # exportation en png              
 map
@@ -105,7 +105,7 @@ pricecat=boston$price
 pricecat= case_when(
   pricecat >= 500 ~ ">500",
   pricecat>=300 & pricecat<500 ~ "300-500",
-  pricecat>=250 & pricecat<300 ~ "250-300",                                                       # Creation d'une nouvelle colonne qui catégorise les prix
+  pricecat>=250 & pricecat<300 ~ "250-300",                                                       # Creation d'une nouvelle colonne qui catÃ©gorise les prix
   pricecat>=200 & pricecat<250 ~ "200-250",
   pricecat>=150 & pricecat<200 ~ "150-200",
   pricecat>=100 & pricecat<150 ~ "100-150",
@@ -117,13 +117,13 @@ pricecat= case_when(
 
 boston2= cbind(boston,pricecat)                                                                  # insertion de cette nouvelle colonne
 
-ordered = factor(boston2$pricecat, levels=c("<25","25-50","50-75","75-100","100-150","150-200","200-250","250-300","300-500",">500"), ordered=TRUE)   #tri personnalisé
+ordered = factor(boston2$pricecat, levels=c("<25","25-50","50-75","75-100","100-150","150-200","200-250","250-300","300-500",">500"), ordered=TRUE)   #tri personnalisÃ©
 
 boston2$pricecat=ordered
 
-tographboston = ddply(boston2,.(pricecat),summarize, number_occur=length(price), Ville="Boston")       # extraction des données de Boston nécessaires au ggplot
+tographboston = ddply(boston2,.(pricecat),summarize, number_occur=length(price), Ville="Boston")       # extraction des donnÃ©es de Boston nÃ©cessaires au ggplot
 
-paris=paris[(which(paris$city=="Paris"& !is.na(paris$price))),]                                       # Les memes opérations sont réalisées pour Paris
+paris=paris[(which(paris$city=="Paris"& !is.na(paris$price))),]                                       # Les memes opÃ©rations sont rÃ©alisÃ©es pour Paris
 
 paris$price <- sub('\\.00', '', paris$price)
 paris$price <- sub(',', '',  paris$price)
@@ -145,7 +145,7 @@ pricecat= case_when(
 )
 
 paris2= cbind(paris,pricecat)
-paris2=head(paris2,length(boston2$pricecat))                                                      # reduction du jeu de données de Paris pour en avoir autant qu'à Boston
+paris2=head(paris2,length(boston2$pricecat))                                                      # reduction du jeu de donnÃ©es de Paris pour en avoir autant qu'Ã  Boston
 
 ordered = factor(paris2$pricecat, levels=c("<25","25-50","50-75","75-100","100-150","150-200","200-250","250-300","300-500",">500"), ordered=TRUE)
 
@@ -156,8 +156,8 @@ tographparis = ddply(paris2,.(pricecat),summarize, number_occur=length(price), V
 new=rbind(tographboston,tographparis)
 ggplot(data=new,aes(x=pricecat,y=number_occur,fill=Ville))+                                       # Creation du graph comparatif des prix par nuit selon la ville
   geom_bar (stat="identity", position ="dodge")+
-  ggtitle('Repartition des locations à Boston et Paris en fonction du prix par nuit')+
-  labs(x="Prix des AirBnb à la nuit ($)", y="Nombre d'annonces")
+  ggtitle('Repartition des locations Ã  Boston et Paris en fonction du prix par nuit')+
+  labs(x="Prix des AirBnb Ã  la nuit ($)", y="Nombre d'annonces")
 
 ###################################################################################################
 ######  3) Quels sont les quartiers les plus chers?  ##############################################
@@ -174,7 +174,7 @@ pricecat=boston$price
 pricecat= case_when(
   pricecat >= 500 ~ ">500",
   pricecat>=200 & pricecat<500 ~ "200-500",
-  pricecat>=100 & pricecat<200 ~ "100-200",                                                     # meme opération que dans la partie 2), mais réduction du nombre de catégories
+  pricecat>=100 & pricecat<200 ~ "100-200",                                                     # meme opÃ©ration que dans la partie 2), mais rÃ©duction du nombre de catÃ©gories
   pricecat>=50 & pricecat<100 ~ "50-100",                                                       # pour un affichage plus clair et plus lisible
   pricecat<50 ~ "<50"
 )
@@ -187,7 +187,7 @@ boston2$pricecat=ordered
 
 tographboston = ddply(boston2,.(pricecat),summarize, lat=latitude, long=longitude)
 
-factpal <- colorFactor(c('#BCCF02','#5BB12F','#73C5FF','#9B539C','#EB65A0'), tographboston$pricecat)    # creation d'une échelle de couleur personnalisée
+factpal <- colorFactor(c('#BCCF02','#5BB12F','#73C5FF','#9B539C','#EB65A0'), tographboston$pricecat)    # creation d'une Ã©chelle de couleur personnalisÃ©e
 
 map <- leaflet()
 map <- addTiles(map)
@@ -232,22 +232,22 @@ ggplot(as.data.frame(crimeTrie),aes(x=DAY_OF_WEEK, y=nb, fill=OFFENSE_DESCRIPTIO
 
 
 ###################################################################################################
-######  5) Cartographie des 10 crimes les plus commis à Boston ####################################
+######  5) Cartographie des 10 crimes les plus commis Ã  Boston ####################################
 ###################################################################################################
 
 category = head(unique(localisation$OFFENSE_DESCRIPTION),10)
 category
 
-#On récupère uniquement les localisations des 10 crimes les plus commis
+#On rÃ©cupÃ¨re uniquement les localisations des 10 crimes les plus commis
 trieCrime=factor(localisation$OFFENSE_DESCRIPTION, category, ordered=TRUE)
 middle = localisation
 middle$OFFENSE_DESCRIPTION = trieCrime
 middle = subset(middle, OFFENSE_DESCRIPTION!="<NA>")
-#On se limite à récupérer l'information sur 3 000 crimes afin d'avoir une cartographie la lisible
-middle = head(middle, 3000)
+#On se limite Ã  rÃ©cupÃ©rer l'information sur 5 000 crimes afin d'avoir une cartographie la lisible
+middle = head(middle, 5000)
 middle
 
-#On réalise la cartographie des 10 crimes les plus commis
+#On rÃ©alise la cartographie des 10 crimes les plus commis
 col = c("blue","red","green","orange","brown","black","magenta","pink","grey","purple")
 pal = colorFactor(col, domain=category)
 
